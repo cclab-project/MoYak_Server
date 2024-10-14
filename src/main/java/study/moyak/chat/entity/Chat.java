@@ -19,7 +19,9 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
-    private String room_name;
+
+    @Column(nullable = false)
+    private String title;
 
     @Lob
     @Column(columnDefinition = "MEDIUMTEXT")  // 명시적으로 TEXT 타입으로 지정

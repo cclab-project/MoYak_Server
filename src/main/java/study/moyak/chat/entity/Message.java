@@ -20,7 +20,7 @@ public class Message {
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chatroom;
 
-    private String role;
+    private String role; //  0: gpt, 1: user
 
     @Column(columnDefinition = "TEXT")
     private String content;

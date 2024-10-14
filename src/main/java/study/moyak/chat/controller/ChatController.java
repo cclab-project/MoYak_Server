@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import study.moyak.ai.chatgpt.dto.Message;
 import study.moyak.ai.chatgpt.service.ChatGptService;
+import study.moyak.chat.dto.request.UpdateTitleDTO;
 import study.moyak.chat.service.ChatService;
 
 import java.io.IOException;
@@ -19,11 +20,11 @@ public class ChatController {
 
     // 채팅방 생성
     @PostMapping("/chat/create")
-    public ResponseEntity<?> createChat(@RequestParam MultipartFile all_image) throws IOException {
+    public ResponseEntity<?> createChat(@RequestParam MultipartFile allImage) throws IOException {
         // 이미지 파일 정보 출력
-        System.out.println("Original Filename: " + all_image.getOriginalFilename());
+        System.out.println("Original Filename: " + allImage.getOriginalFilename());
 
-        return chatService.createChat(all_image);
+        return chatService.createChat(allImage);
     }
 
     // chat_id번째 채팅방 불러오기
@@ -35,7 +36,7 @@ public class ChatController {
         return chatService.getChat(chat_id);
     }
 
-    // chat_id번째 채팅방에 질문 추가
+    // chat_id번째 채팅방에 질문 추가 -> Message 테이블에 대화내용 추가해야함 + UpdateChatDto 추가
     @PostMapping("/chat/{chat_id}")
     public ResponseEntity<Message> updateChat(
             @PathVariable("chat_id") Long chat_id,
@@ -45,9 +46,9 @@ public class ChatController {
         System.out.println("질문 추가할 채팅방 번호 = " + chat_id);
         System.out.println("사용자의 질문 = " + question);
 
-        String prompt_question = chatGptService.getPrompt(question);
+        String promptQuestion = chatGptService.getPrompt(question);
 
-        return ResponseEntity.ok(chatGptService.gptRequest(prompt_question));
+        return ResponseEntity.ok(chatGptService.gptRequest(promptQuestion));
     }
 
     // chat_id번째 채팅방 삭제
@@ -58,7 +59,20 @@ public class ChatController {
 
     // chat_id번째 채팅방 제목 수정
     @PatchMapping("/chat/{chat_id}")
-    public ResponseEntity<?> updateTitle(@PathVariable("chat_id") Long chat_id, @RequestParam String title) throws IOException {
-            return chatService.updateTitle(chat_id, title);
+    public ResponseEntity<?> updateTitle(
+            @PathVariable("chat_id") Long chat_id, @RequestBody UpdateTitleDTO title) throws IOException {
+
+        System.out.println("수정할 제목 = " + title.getTitle());
+
+        String newTitle = title.getTitle();
+
+        return chatService.updateTitle(chat_id, newTitle);
+    }
+
+    // 채팅방 내역 요청
+    @GetMapping("/chat/list/{chat_id}")
+    public ResponseEntity<?> chatList(@PathVariable("chat_id") Long chat_id) throws IOException {
+
+        return null;
     }
 }

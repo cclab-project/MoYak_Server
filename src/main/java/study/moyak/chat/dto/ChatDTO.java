@@ -11,7 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ChatDTO {
 
-    private String all_image;
+    private String allImage;
+    private String title;
     private List<EachPillDTO> eachPills;
 
     public ChatDTO(List<EachPillDTO> eachPills) {
