@@ -9,6 +9,7 @@ import study.moyak.chat.dto.ChatDTO;
 import study.moyak.chat.dto.EachPillDTO;
 import study.moyak.chat.entity.Chat;
 import study.moyak.chat.repository.ChatRepository;
+import study.moyak.chat.repository.MessageRepository;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class ChatService {
             chat.setAll_image(base64Data);
 
             chatRepository.save(chat);
+
             return ResponseEntity.ok(chat.getId());
         }
 
