@@ -7,9 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import study.moyak.chat.dto.ChatDTO;
 import study.moyak.chat.dto.EachPillDTO;
+import study.moyak.chat.dto.response.ChatMessageDTO;
+import study.moyak.chat.dto.response.ChatResponseDTO;
 import study.moyak.chat.entity.Chat;
+import study.moyak.chat.repository.ChatMessageRepository;
 import study.moyak.chat.repository.ChatRepository;
 
 import java.io.FileNotFoundException;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 public class ChatService {
 
     private final ChatRepository chatRepository;
-
+    private final ChatMessageRepository chatMessageRepository;
 
     @Transactional
     public ResponseEntity<?> createChat(MultipartFile allImage) throws IOException {
@@ -46,16 +48,22 @@ public class ChatService {
 
     }
 
+    // 채팅 내역 불러올 때, chat_id에 해당하는 eachpill에 있는 것들 + 채팅내역 필요
     @Transactional
     public ResponseEntity<?> getChat(Long chat_id) throws IOException {
         Chat chat = chatRepository.findById(chat_id)
                 .orElseThrow(() -> new FileNotFoundException("채팅방을 찾을 수 없습니다."));
 
+        // chat_id에 해당하는 eachpill 불러오기
         List<EachPillDTO> eachPills = chat.getEachPills().stream()
                 .map(pill -> new EachPillDTO(pill.getImage(), pill.getPillName(), pill.getPillIngredient()))
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new ChatDTO(eachPills));
+        List<ChatMessageDTO> chatMessages = chat.getChatMessages().stream()
+                .map(message -> new ChatMessageDTO(message.getRole(), message.getContent()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(new ChatResponseDTO(eachPills, chatMessages));
     }
 
     @Transactional
