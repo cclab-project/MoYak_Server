@@ -24,8 +24,8 @@ public class Chat {
     private String title;
 
     @Lob
-    @Column(columnDefinition = "MEDIUMTEXT")  // 명시적으로 TEXT 타입으로 지정
-    private String all_image;
+    @Column(columnDefinition = "MEDIUMTEXT", name = "all_image")  // 명시적으로 TEXT 타입으로 지정
+    private String allImage;
 
     @CreationTimestamp
     private Timestamp createDate;

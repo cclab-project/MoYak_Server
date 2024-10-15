@@ -18,8 +18,12 @@ public class EachPill {
     @Lob
     @Column(columnDefinition = "MEDIUMTEXT")  // 명시적으로 TEXT 타입으로 지정
     private String image;
-    private String pill_name;
-    private String pill_ingredient;
+
+    @Column(name = "pill_name")
+    private String pillName;
+
+    @Column(name = "pill_ingredient")
+    private String pillIngredient;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id")

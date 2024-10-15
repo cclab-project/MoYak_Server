@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class EachPillDTO {
 
     private String image;
-    private String pill_name;
-    private String pill_ingredient;
+    private String pillName;
+    private String pillIngredient;
 }

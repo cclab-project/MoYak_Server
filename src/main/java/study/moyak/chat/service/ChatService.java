@@ -8,13 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import study.moyak.chat.dto.ChatDTO;
 import study.moyak.chat.dto.EachPillDTO;
-import study.moyak.chat.dto.request.UpdateTitleDTO;
 import study.moyak.chat.entity.Chat;
 import study.moyak.chat.repository.ChatRepository;
-import study.moyak.chat.repository.MessageRepository;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,18 +28,17 @@ public class ChatService {
     @Transactional
     public ResponseEntity<?> createChat(MultipartFile allImage) throws IOException {
         Chat chat = new Chat();
-        chat.setAll_image(allImage.getOriginalFilename());
-        //chat.setRoom_name(String.valueOf(chat.getCreateDate())); // 처음 채팅방 생성됐을 때는 생성된 날짜로
+        chat.setAllImage(allImage.getOriginalFilename());
+        chat.setTitle(LocalDateTime.now().toString()); // 처음 채팅방 생성됐을 때는 생성된 날짜로
 
         if(allImage.isEmpty()){
             return ResponseEntity.status(404).body("no Image");
         }else{
             //이미지 Base64 인코딩
             String base64Data = Base64.getEncoder().encodeToString(allImage.getBytes());
-            chat.setAll_image(base64Data);
+            chat.setAllImage(base64Data);
 
             chatRepository.save(chat);
-            chat.setTitle(String.valueOf(chat.getCreateDate())); // 처음 채팅방 생성됐을 때는 생성된 날짜로
 
             return ResponseEntity.ok(chat.getId());
         }
@@ -53,7 +51,7 @@ public class ChatService {
                 .orElseThrow(() -> new FileNotFoundException("채팅방을 찾을 수 없습니다."));
 
         List<EachPillDTO> eachPills = chat.getEachPills().stream()
-                .map(pill -> new EachPillDTO(pill.getImage(), pill.getPill_name(), pill.getPill_ingredient()))
+                .map(pill -> new EachPillDTO(pill.getImage(), pill.getPillName(), pill.getPillIngredient()))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(new ChatDTO(eachPills));
