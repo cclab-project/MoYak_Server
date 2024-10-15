@@ -9,8 +9,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "message")
-public class Message {
+@Table
+public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +20,9 @@ public class Message {
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chatroom;
 
-    private String role;
+    @Column(nullable = false)
+    private String role; //  assistant, user
 
     @Column(columnDefinition = "TEXT")
     private String content;
-
-    private String title;
 }

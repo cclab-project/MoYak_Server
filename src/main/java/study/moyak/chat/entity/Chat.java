@@ -19,15 +19,22 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
-    private String room_name;
+
+    @Column(nullable = false)
+    private String title;
 
     @Lob
-    @Column(columnDefinition = "MEDIUMTEXT")  // 명시적으로 TEXT 타입으로 지정
-    private String all_image;
+    @Column(columnDefinition = "MEDIUMTEXT", name = "all_image")  // 명시적으로 TEXT 타입으로 지정
+    private String allImage;
 
     @CreationTimestamp
     private Timestamp createDate;
 
+    // 마지막 대화시간 추가해야됨
+
     @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EachPill> eachPills;
+
+    @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChatMessage> chatMessages;
 }
