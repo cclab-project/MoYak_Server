@@ -49,9 +49,9 @@ public class ChatController {
         System.out.println("질문 추가할 채팅방 번호 = " + chat_id);
         System.out.println("사용자의 질문 = " + question);
 
-        String promptQuestion = chatGptService.getPrompt(question);
+        String promptQuestion = chatGptService.getPrompt(chat_id, question);
 
-        return ResponseEntity.ok(chatGptService.gptRequest(promptQuestion));
+        return ResponseEntity.ok(chatGptService.gptRequest(chat_id, promptQuestion));
     }
 
     // chat_id번째 채팅방 삭제
