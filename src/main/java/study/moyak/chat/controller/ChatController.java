@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import study.moyak.ai.chatgpt.dto.Message;
 import study.moyak.ai.chatgpt.service.ChatGptService;
+import study.moyak.chat.dto.ChatDTO;
 import study.moyak.chat.dto.request.NewChatDTO;
-import study.moyak.chat.dto.request.UpdateTitleDTO;
 import study.moyak.chat.service.ChatService;
 
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class ChatController {
             @RequestBody NewChatDTO content
     ){
 
-        String question = content.getChatContent();
+        String question = content.getContent();
 
         System.out.println("질문 추가할 채팅방 번호 = " + chat_id);
         System.out.println("사용자의 질문 = " + question);
@@ -63,7 +63,7 @@ public class ChatController {
     // chat_id번째 채팅방 제목 수정
     @PatchMapping("/chat/{chat_id}")
     public ResponseEntity<?> updateTitle(
-            @PathVariable("chat_id") Long chat_id, @RequestBody UpdateTitleDTO title) throws IOException {
+            @PathVariable("chat_id") Long chat_id, @RequestBody ChatDTO title) throws IOException {
 
         System.out.println("수정할 제목 = " + title.getTitle());
 

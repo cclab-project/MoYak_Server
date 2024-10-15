@@ -30,6 +30,8 @@ public class Chat {
     @CreationTimestamp
     private Timestamp createDate;
 
+    // 마지막 대화시간 추가해야됨
+
     @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EachPill> eachPills;
 }

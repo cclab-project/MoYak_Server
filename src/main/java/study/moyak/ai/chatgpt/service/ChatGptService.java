@@ -62,6 +62,9 @@ public class ChatGptService {
 
         Message getMessage = gptResponse.getChoices().get(0).getMessage();
 
+        System.out.println("1. role: " + requestDto.getMessages().get(0).getRole());
+        System.out.println("2. role: "+ getMessage.getRole());
+
         if(getMessage != null) {
             return getMessage;
         }else {

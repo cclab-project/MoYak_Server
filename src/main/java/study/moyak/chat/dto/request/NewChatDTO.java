@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NewChatDTO {
 
-    private String chatContent;
+    private String content;
     //private String email;
 }

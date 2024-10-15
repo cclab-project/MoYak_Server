@@ -3,6 +3,7 @@ package study.moyak.chat.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,13 +59,22 @@ public class ChatService {
     }
 
     @Transactional
-    public ResponseEntity<?> deleteChat(Long chat_id) throws IOException {
-        Chat chat = chatRepository.findById(chat_id).orElseThrow(
-                () -> new FileNotFoundException("채팅방을 찾을 수 없습니다."));
+    public ResponseEntity<String> deleteChat(Long chat_id) {
+        if (chat_id == null) {
+            return ResponseEntity.badRequest().body("잘못된 요청입니다. 채팅방 ID가 필요합니다."); // 400 Bad Request
+        }
 
-        chatRepository.delete(chat);
-
-        return ResponseEntity.ok().body("채팅방 삭제 완료");
+        try {
+            Chat chat = chatRepository.findById(chat_id).orElseThrow(
+                    () -> new EntityNotFoundException("채팅방을 찾을 수 없습니다.")
+            );
+            chatRepository.delete(chat);
+            return ResponseEntity.ok().body("채팅방 삭제 완료"); // 200 OK
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 채팅방을 찾을 수 없습니다."); // 404 Not Found
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 내부 오류가 발생했습니다."); // 500 Internal Server Error
+        }
     }
 
     @Transactional
