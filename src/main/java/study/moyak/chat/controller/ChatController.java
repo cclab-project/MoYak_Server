@@ -11,6 +11,7 @@ import study.moyak.chat.dto.request.UpdateTitleDTO;
 import study.moyak.chat.service.ChatService;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,11 +22,12 @@ public class ChatController {
 
     // 채팅방 생성
     @PostMapping("/chat/create")
-    public ResponseEntity<?> createChat(@RequestParam("all_image") MultipartFile allImage) throws IOException {
+    public ResponseEntity<?> createChat(@RequestParam("all_image") MultipartFile allImage,
+                                        @RequestParam String timestamp) throws IOException {
         // 이미지 파일 정보 출력
         System.out.println("Original Filename: " + allImage.getOriginalFilename());
 
-        return chatService.createChat(allImage);
+        return chatService.createChat(allImage, timestamp);
     }
 
     // chat_id번째 채팅방 불러오기

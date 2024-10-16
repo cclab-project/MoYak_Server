@@ -16,6 +16,7 @@ import study.moyak.chat.repository.ChatRepository;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
@@ -29,10 +30,10 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
 
     @Transactional
-    public ResponseEntity<?> createChat(MultipartFile allImage) throws IOException {
+    public ResponseEntity<?> createChat(MultipartFile allImage, String timeStamp) throws IOException {
         Chat chat = new Chat();
         chat.setAllImage(allImage.getOriginalFilename());
-        chat.setTitle(LocalDateTime.now().toString()); // 처음 채팅방 생성됐을 때는 생성된 날짜로
+        chat.setTitle(timeStamp.toString()); // 처음 채팅방 생성됐을 때는 생성된 날짜로
 
         if(allImage.isEmpty()){
             return ResponseEntity.status(404).body("no Image");
