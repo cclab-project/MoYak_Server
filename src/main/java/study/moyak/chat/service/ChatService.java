@@ -33,7 +33,8 @@ public class ChatService {
     public ResponseEntity<?> createChat(MultipartFile allImage, String timeStamp) throws IOException {
         Chat chat = new Chat();
         chat.setAllImage(allImage.getOriginalFilename());
-        chat.setTitle(timeStamp.toString()); // 처음 채팅방 생성됐을 때는 생성된 날짜로
+        chat.setTitle(timeStamp); // 처음 채팅방 생성됐을 때는 생성된 날짜로
+        System.out.println("timeStamp: " + timeStamp);
 
         if(allImage.isEmpty()){
             return ResponseEntity.status(404).body("no Image");
