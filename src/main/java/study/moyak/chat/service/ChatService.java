@@ -16,8 +16,6 @@ import study.moyak.chat.repository.ChatRepository;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;

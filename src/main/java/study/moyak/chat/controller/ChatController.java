@@ -23,11 +23,11 @@ public class ChatController {
     // 채팅방 생성
     @PostMapping("/chat/create")
     public ResponseEntity<?> createChat(@RequestParam("all_image") MultipartFile allImage,
-                                        @RequestParam String timestamp) throws IOException {
+                                        @RequestParam String timeStamp) throws IOException {
         // 이미지 파일 정보 출력
         System.out.println("Original Filename: " + allImage.getOriginalFilename());
 
-        return chatService.createChat(allImage, timestamp);
+        return chatService.createChat(allImage, timeStamp);
     }
 
     // chat_id번째 채팅방 불러오기
