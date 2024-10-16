@@ -21,7 +21,7 @@ public class ChatController {
 
     // 채팅방 생성
     @PostMapping("/chat/create")
-    public ResponseEntity<?> createChat(@RequestParam MultipartFile allImage) throws IOException {
+    public ResponseEntity<?> createChat(@RequestParam("all_image") MultipartFile allImage) throws IOException {
         // 이미지 파일 정보 출력
         System.out.println("Original Filename: " + allImage.getOriginalFilename());
 
@@ -72,7 +72,7 @@ public class ChatController {
         return chatService.updateTitle(chat_id, newTitle);
     }
 
-    // 채팅방 내역 요청
+    // 홈화면 요청 (email이랑 같이 보내야함)
     @GetMapping("/chat/list/{chat_id}")
     public ResponseEntity<?> chatList(@PathVariable("chat_id") Long chat_id) throws IOException {
 
