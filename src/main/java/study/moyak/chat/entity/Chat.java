@@ -20,7 +20,7 @@ public class Chat {
     private Long id;
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String title;
 
     @Lob
