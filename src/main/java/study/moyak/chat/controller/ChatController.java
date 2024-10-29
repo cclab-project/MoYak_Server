@@ -8,10 +8,15 @@ import study.moyak.ai.chatgpt.dto.Message;
 import study.moyak.ai.chatgpt.service.ChatGptService;
 import study.moyak.chat.dto.request.NewChatDTO;
 import study.moyak.chat.dto.request.UpdateTitleDTO;
+import study.moyak.chat.entity.EachPill;
+import study.moyak.chat.repository.EachPillRepository;
 import study.moyak.chat.service.ChatService;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +24,20 @@ public class ChatController {
 
     private final ChatService chatService;
     private final ChatGptService chatGptService;
+    private final EachPillRepository eachPillRepository;
+
+
+    @GetMapping("/test/{chat_id}")
+    public ResponseEntity<?> test(@PathVariable("chat_id") Long chatId) {
+
+        List<EachPill> pills = eachPillRepository.findByChatroomId(chatId);
+
+        String pillInfo = pills.stream()
+                .map(pill -> pill.getPillName() + " (" + pill.getPillIngredient() + ")")
+                .collect(Collectors.joining("\n"));
+
+        return ResponseEntity.ok(pillInfo);
+    }
 
     // 채팅방 생성
     @PostMapping("/chat/create")

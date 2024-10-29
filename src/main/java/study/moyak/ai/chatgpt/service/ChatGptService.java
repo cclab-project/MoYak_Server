@@ -12,11 +12,15 @@ import study.moyak.ai.chatgpt.dto.request.ChatGptRequestDto;
 import study.moyak.ai.chatgpt.dto.response.ChatGptResponseDto;
 import study.moyak.ai.chatgpt.dto.response.Choice;
 import study.moyak.chat.entity.ChatMessage;
+import study.moyak.chat.entity.EachPill;
 import study.moyak.chat.repository.ChatMessageRepository;
 import study.moyak.chat.repository.ChatRepository;
+import study.moyak.chat.repository.EachPillRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -34,22 +38,36 @@ public class ChatGptService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRepository chatRepository;
+    private final EachPillRepository eachPillRepository;
 
     // 정확한 답변을 위한 프롬프트 추가: 여기서 반환한 것으로 gpt에게 질문할 예정
     // 사용자의 질문 db에 저장 (사용자에게는 프롬프트하기 전(=사용자가 입력한) 질문을 보여줘야 함)
-    public String getPrompt(Long chat_id, String question) {
+    public String getPrompt(Long chatId, String question) {
 
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setRole("user");
         chatMessage.setContent(question);
-        chatMessage.setChatroom(chatRepository.findById(chat_id).get());
+        chatMessage.setChatroom(chatRepository.findById(chatId).get());
 
+        // 사용자의 질문 저장
         chatMessageRepository.save(chatMessage);
 
-        String promptQuestion = "내가 지금 약을 먹으려고 해. 다음은 약들의 성분이야"
-                // + 약의 이름 및 성분에 대한 정보 (EachPill에서 꺼내오기)
-                + question // 사용자 질문 ex) 이 약 술과 함께 먹어도 돼? or 이 약을 한 번에 먹어도 돼?
-                + "약들의 성분을 고려해서 간결하게 대답해줘. 의사와 상담하라는 내용은 제외하고, 존댓말로 대답해줘.";
+        // chatId에 해당하는 약정보 조회
+        List<EachPill> pills = eachPillRepository.findByChatroomId(chatId);
+
+        // 약 정보들을 "약 이름 : 성분" 형식으로 바꾸기
+        String pillInfo = pills.stream()
+                .map(pill -> pill.getPillName() + " : " + pill.getPillIngredient())
+                .collect(Collectors.joining("\n"));
+
+        // 프롬프트
+        String promptQuestion = "현재 복용하려는 약 정보는 다음과 같습니다:\n\n"
+                + pillInfo + "\n\n" // 약의 이름 및 성분에 대한 정보 포함
+                + "사용자 질문: \"" + question + "\"\n\n" // 사용자가 입력한 질문 포함
+                + "위 약들의 성분을 고려하여 사용자 질문에 대한 간결한 답변을 제공해 주세요. "
+                + "의사와 상담하라는 내용은 제외하고, 존댓말로 부드럽게 답변해 주세요.";
+
+        System.out.println(promptQuestion);
 
         return promptQuestion;
     }
@@ -75,8 +93,6 @@ public class ChatGptService {
                 apiUrl, HttpMethod.POST, gptRequest, ChatGptResponseDto.class).getBody();
 
         Message getMessage = gptResponse.getChoices().get(0).getMessage();
-
-        System.out.println("role: "+ getMessage.getRole());
 
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setRole(getMessage.getRole());
