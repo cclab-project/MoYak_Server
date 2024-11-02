@@ -26,19 +26,6 @@ public class ChatController {
     private final ChatGptService chatGptService;
     private final EachPillRepository eachPillRepository;
 
-
-    @GetMapping("/test/{chat_id}")
-    public ResponseEntity<?> test(@PathVariable("chat_id") Long chatId) {
-
-        List<EachPill> pills = eachPillRepository.findByChatroomId(chatId);
-
-        String pillInfo = pills.stream()
-                .map(pill -> pill.getPillName() + " (" + pill.getPillIngredient() + ")")
-                .collect(Collectors.joining("\n"));
-
-        return ResponseEntity.ok(pillInfo);
-    }
-
     // 채팅방 생성
     @PostMapping("/chat/create")
     public ResponseEntity<?> createChat(@RequestParam("all_image") MultipartFile allImage,
