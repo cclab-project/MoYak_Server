@@ -26,6 +26,13 @@ public class ChatController {
     private final ChatGptService chatGptService;
     private final EachPillRepository eachPillRepository;
 
+    // 홈화면 요청
+    @GetMapping("/chat/list?userId={userId}")
+    public ResponseEntity<?> chatList(@PathVariable("userId") Long userId) throws IOException {
+
+        return null;
+    }
+
     // 채팅방 생성
     @PostMapping("/chat/create")
     public ResponseEntity<?> createChat(@RequestParam("all_image") MultipartFile allImage,
@@ -45,7 +52,7 @@ public class ChatController {
         return chatService.getChat(chat_id);
     }
 
-    // chat_id번째 채팅방에 질문 추가 -> Message 테이블에 대화내용 추가해야함 + UpdateChatDto 추가
+    // chat_id번째 채팅방에 질문 추가 -> Message 테이블에 대화내용 추가해야함
     @PostMapping("/chat/{chat_id}")
     public ResponseEntity<Message> updateChat(
             @PathVariable("chat_id") Long chat_id,
@@ -78,12 +85,5 @@ public class ChatController {
         String newTitle = title.getTitle();
 
         return chatService.updateTitle(chat_id, newTitle);
-    }
-
-    // 홈화면 요청 (email이랑 같이 보내야함)
-    @GetMapping("/chat/list/{chat_id}")
-    public ResponseEntity<?> chatList(@PathVariable("chat_id") Long chat_id) throws IOException {
-
-        return null;
     }
 }

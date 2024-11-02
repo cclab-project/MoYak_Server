@@ -1,8 +1,13 @@
 package study.moyak.chat.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.util.IOUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,11 +18,14 @@ import study.moyak.chat.dto.response.ChatResponseDTO;
 import study.moyak.chat.entity.Chat;
 import study.moyak.chat.repository.ChatMessageRepository;
 import study.moyak.chat.repository.ChatRepository;
+import study.moyak.user.entity.User;
+import study.moyak.user.repository.UserRepository;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,27 +33,56 @@ import java.util.stream.Collectors;
 public class ChatService {
 
     private final ChatRepository chatRepository;
+    private final UserRepository userRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final AmazonS3Client amazonS3Client;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    private String S3_DIR = "allImage";
 
     @Transactional
     public ResponseEntity<?> createChat(MultipartFile allImage, String timeStamp) throws IOException {
         Chat chat = new Chat();
-        chat.setAllImage(allImage.getOriginalFilename());
         chat.setTitle(timeStamp); // 처음 채팅방 생성됐을 때는 생성된 날짜로
-        System.out.println("timeStamp: " + timeStamp);
+        chatRepository.save(chat); // s3 경로를 위해 미리 저장
+
+        File uploadFile = convert(allImage)
+                .orElseThrow(() -> new IllegalArgumentException("파일 변환에 실패하였습니다."));
 
         if(allImage.isEmpty()){
             return ResponseEntity.status(404).body("no Image");
         }else{
-            //이미지 Base64 인코딩
-            String base64Data = Base64.getEncoder().encodeToString(allImage.getBytes());
-            chat.setAllImage(base64Data);
+            String originalFilename = uploadFile.getName(); //원본 파일 명
+            String fileName = S3_DIR + "/" + chat.getId() + "/" + UUID.randomUUID() + originalFilename;   // S3에 저장된 파일 이름
+            String uploadUrl = uploadS3(uploadFile, fileName);
 
-            chatRepository.save(chat);
+
+            chat.setAllImage(uploadUrl);
+            chatRepository.save(chat); // image 경로 설정 후, 저장
 
             return ResponseEntity.ok(chat.getId());
         }
 
+    }
+
+    private Optional<File> convert(MultipartFile file) throws IOException {
+        File convertFile = new File(System.getProperty("user.home") + "/" + file.getOriginalFilename());
+        if (convertFile.createNewFile()) {
+            try (FileOutputStream fos = new FileOutputStream(convertFile)) { // FileOutputStream 데이터를 파일에 바이트 스트림으로 저장하기 위함
+                fos.write(file.getBytes());
+            }
+            return Optional.of(convertFile);
+        }
+        return Optional.empty();
+    }
+
+    // S3로 업로드
+    private String uploadS3(File uploadFile, String fileName) {
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(
+                CannedAccessControlList.PublicRead));
+        return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
     // 채팅 내역 불러올 때, chat_id에 해당하는 eachpill에 있는 것들 + 채팅내역 필요
