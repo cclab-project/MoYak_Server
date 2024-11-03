@@ -20,6 +20,7 @@ import study.moyak.user.entity.User;
 import study.moyak.user.repository.UserRepository;
 
 import java.io.*;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,35 +30,39 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
-    private final ChatMessageRepository chatMessageRepository;
-    private final S3Service s3Service;
 
     // private String S3_DIR = "allImage";
 
     @Transactional
-    public ResponseEntity<?> chatList(Long userId) {
+    public ResponseEntity<List<ChatListDTO>> chatList(Long userId) {
         // userId로 Chat 목록 조회
         List<Chat> chats = chatRepository.findByUserId(userId);
 
-        // Chat 데이터를 ChatListDTO로 변환
-        List<ChatListDTO> chatListDTOs = chats.stream().map(chat -> {
-            // EachPill의 pillName 추출
-            List<String> pillNames = chat.getEachPills().stream()
-                    .map(EachPill::getPillName) // 각 EachPill의 pillName 가져오기
-                    .collect(Collectors.toList());
+        // List<Chat> -> List<ChatListDTO> 변환
+        List<ChatListDTO> chatListDTOs = chats.stream()
+                .map(this::convertToChatListDTO)
+                .collect(Collectors.toList());
 
-            // ChatListDTO 생성
-            ChatListDTO chatListDTO = new ChatListDTO();
-            chatListDTO.setAllImage(chat.getAllImage());
-            chatListDTO.setTitle(chat.getTitle());
-            chatListDTO.setPillName(pillNames);
-            chatListDTO.setCreateDate(chat.getCreateDate().toString()); // Timestamp를 문자열로 변환
-
-            return chatListDTO;
-        }).collect(Collectors.toList());
-
-        // 변환된 List<ChatListDTO>를 ResponseEntity로 반환
         return ResponseEntity.ok(chatListDTOs);
+    }
+
+    private ChatListDTO convertToChatListDTO(Chat chat) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // Chat -> ChatListDTO 변환
+        return ChatListDTO.builder()
+                .allImage(chat.getAllImage())
+                .title(chat.getTitle())
+                .pillName(extractPillNames(chat))
+                .createDate(chat.getCreateDate().toLocalDateTime().format(formatter))
+                .build();
+    }
+
+    private List<String> extractPillNames(Chat chat) {
+        // 각 Chat의 EachPill에서 pillName을 추출
+        return chat.getEachPills().stream()
+                .map(EachPill::getPillName)
+                .collect(Collectors.toList());
     }
 
     // createDate와 chatId를 보내주세요
