@@ -28,7 +28,7 @@ public class ChatController {
     private final ChatGptService chatGptService;
 
     // 홈화면 요청 -> 알약 전체 사진, 알약 이름, 생성된 날짜 꺼내와 주세요
-    @GetMapping("/chat/list?userId={userId}")
+    @GetMapping("/chat/list")
     public ResponseEntity<?> chatList(@RequestParam Long userId) throws IOException {
 
         return chatService.chatList(userId);
