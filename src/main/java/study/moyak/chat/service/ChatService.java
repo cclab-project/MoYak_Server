@@ -9,9 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import study.moyak.chat.dto.EachPillDTO;
 import study.moyak.chat.dto.request.CreateChatDTO;
+import study.moyak.chat.dto.response.ChatListDTO;
 import study.moyak.chat.dto.response.ChatMessageDTO;
 import study.moyak.chat.dto.response.ChatResponseDTO;
 import study.moyak.chat.entity.Chat;
+import study.moyak.chat.entity.EachPill;
 import study.moyak.chat.repository.ChatMessageRepository;
 import study.moyak.chat.repository.ChatRepository;
 import study.moyak.user.repository.UserRepository;
@@ -30,6 +32,32 @@ public class ChatService {
     private final S3Service s3Service;
 
     // private String S3_DIR = "allImage";
+
+    @Transactional
+    public ResponseEntity<?> chatList(Long userId) {
+        // userId로 Chat 목록 조회
+        List<Chat> chats = chatRepository.findByUserId(userId);
+
+        // Chat 데이터를 ChatListDTO로 변환
+        List<ChatListDTO> chatListDTOs = chats.stream().map(chat -> {
+            // EachPill의 pillName 추출
+            List<String> pillNames = chat.getEachPills().stream()
+                    .map(EachPill::getPillName) // 각 EachPill의 pillName 가져오기
+                    .collect(Collectors.toList());
+
+            // ChatListDTO 생성
+            ChatListDTO chatListDTO = new ChatListDTO();
+            chatListDTO.setAllImage(chat.getAllImage());
+            chatListDTO.setTitle(chat.getTitle());
+            chatListDTO.setPillName(pillNames);
+            chatListDTO.setCreateDate(chat.getCreateDate().toString()); // Timestamp를 문자열로 변환
+
+            return chatListDTO;
+        }).collect(Collectors.toList());
+
+        // 변환된 List<ChatListDTO>를 ResponseEntity로 반환
+        return ResponseEntity.ok(chatListDTOs);
+    }
 
     // createDate와 chatId를 보내주세요
     @Transactional

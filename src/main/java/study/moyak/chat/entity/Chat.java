@@ -3,6 +3,7 @@ package study.moyak.chat.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import study.moyak.user.entity.User;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -18,7 +19,12 @@ public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
+
+    // private String email;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id") // User의 기본 키를 외래 키로 사용
+    private User user;
 
     @Column
     private String title;

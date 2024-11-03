@@ -32,7 +32,7 @@ public class ChatController {
     public ResponseEntity<?> chatList(@PathVariable("userId") Long userId) throws IOException {
 
 
-        return null;
+        return chatService.chatList(userId);
     }
 
     // 채팅방 생성 -> createDate와 chatId를 보내주세요
