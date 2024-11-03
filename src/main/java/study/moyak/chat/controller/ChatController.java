@@ -13,6 +13,7 @@ import study.moyak.chat.repository.EachPillRepository;
 import study.moyak.chat.service.ChatService;
 
 import java.io.IOException;
+import java.sql.Blob;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -26,19 +27,20 @@ public class ChatController {
     private final ChatGptService chatGptService;
     private final EachPillRepository eachPillRepository;
 
-    // 홈화면 요청
+    // 홈화면 요청 -> 알약 전체 사
     @GetMapping("/chat/list?userId={userId}")
     public ResponseEntity<?> chatList(@PathVariable("userId") Long userId) throws IOException {
+
 
         return null;
     }
 
     // 채팅방 생성
     @PostMapping("/chat/create")
-    public ResponseEntity<?> createChat(@RequestParam("all_image") MultipartFile allImage,
+    public ResponseEntity<?> createChat(@RequestParam("all_image") String allImage,
                                         @RequestParam String timeStamp) throws IOException {
         // 이미지 파일 정보 출력
-        System.out.println("Original Filename: " + allImage.getOriginalFilename());
+        System.out.println("Original Filename: " + allImage);
 
         return chatService.createChat(allImage, timeStamp);
     }

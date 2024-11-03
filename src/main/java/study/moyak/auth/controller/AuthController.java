@@ -1,5 +1,6 @@
 package study.moyak.auth.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,9 +19,10 @@ public class AuthController {
 
     private final UserService userService;
     private final AuthService authService;
+    private final HttpSession session;
 
     @PostMapping("/kakao/callback")
-    public ResponseEntity<String> kakaoCallback(@RequestParam String code) { //데이터를 리턴해주는 컨트롤러 함수
+    public ResponseEntity<User> kakaoCallback(@RequestParam String code) { //데이터를 리턴해주는 컨트롤러 함수
 
         OAuthToken oauthToken = authService.getAccessTokenFromKakao(code);
 

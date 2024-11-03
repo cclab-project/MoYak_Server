@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -23,12 +24,17 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    // 파일 변환
-    Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(System.getProperty("user.home") + "/" + file.getOriginalFilename());
+    // Base64 데이터를 파일로 변환
+    Optional<File> convert(String base64Image) throws IOException {
+        // 홈 디렉토리에 저장할 파일 이름을 설정 (예: "uploadedImage.jpg")
+        File convertFile = new File(System.getProperty("user.home") + "/uploadedImage.jpg");
+
+        // Base64 디코딩하여 바이트 배열로 변환
+        byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
+
         if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) { // FileOutputStream 데이터를 파일에 바이트 스트림으로 저장하기 위함
-                fos.write(file.getBytes());
+            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+                fos.write(decodedBytes); // 디코딩된 바이트 배열을 파일로 저장
             }
             return Optional.of(convertFile);
         }
