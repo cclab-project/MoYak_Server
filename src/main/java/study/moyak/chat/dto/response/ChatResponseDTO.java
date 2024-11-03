@@ -14,4 +14,5 @@ public class ChatResponseDTO { // 채팅내역 반환하는 DTO
 
     private List<EachPillDTO> eachPills;
     private List<ChatMessageDTO> chatMessages;
+    private String title;
 }

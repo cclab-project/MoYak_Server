@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import study.moyak.chat.dto.EachPillDTO;
 import study.moyak.chat.dto.request.CreateChatDTO;
 import study.moyak.chat.dto.response.ChatMessageDTO;
@@ -19,7 +18,6 @@ import study.moyak.user.repository.UserRepository;
 
 import java.io.*;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +31,7 @@ public class ChatService {
 
     // private String S3_DIR = "allImage";
 
+    // createDate와 chatId를 보내주세요
     @Transactional
     public ResponseEntity<?> createChat(CreateChatDTO createChatDTO) throws IOException {
         Chat chat = new Chat();
@@ -45,11 +44,14 @@ public class ChatService {
         return ResponseEntity.ok(chat.getId());
     }
 
-    // 채팅 내역 불러올 때, chat_id에 해당하는 eachpill에 있는 것들 + 채팅내역 필요
+    // 채팅 내역 불러올 때, chat_id에 해당하는 eachpill에 있는 것들 + 채팅내역 + 채팅방 제목 필요
     @Transactional
     public ResponseEntity<?> getChat(Long chat_id) throws IOException {
         Chat chat = chatRepository.findById(chat_id)
                 .orElseThrow(() -> new FileNotFoundException("채팅방을 찾을 수 없습니다."));
+
+        // tilte 가져오기
+        String title = chat.getTitle();
 
         // chat_id에 해당하는 eachpill 불러오기
         List<EachPillDTO> eachPills = chat.getEachPills().stream()
@@ -60,7 +62,7 @@ public class ChatService {
                 .map(message -> new ChatMessageDTO(message.getRole(), message.getContent()))
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new ChatResponseDTO(eachPills, chatMessages));
+        return ResponseEntity.ok(new ChatResponseDTO(eachPills, chatMessages, title));
     }
 
     @Transactional

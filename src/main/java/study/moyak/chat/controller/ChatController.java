@@ -27,7 +27,7 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatGptService chatGptService;
 
-    // 홈화면 요청 -> 알약 전체 사
+    // 홈화면 요청 -> 알약 전체 사진, 알약 이름, 생성된 날짜 꺼내와 주세요
     @GetMapping("/chat/list?userId={userId}")
     public ResponseEntity<?> chatList(@PathVariable("userId") Long userId) throws IOException {
 
@@ -35,7 +35,7 @@ public class ChatController {
         return null;
     }
 
-    // 채팅방 생성
+    // 채팅방 생성 -> createDate와 chatId를 보내주세요
     @PostMapping("/chat/create")
     public ResponseEntity<?> createChat(@RequestBody CreateChatDTO createChatDTO) throws IOException {
         System.out.println(createChatDTO.getAll_image_url());
@@ -44,7 +44,7 @@ public class ChatController {
         return chatService.createChat(createChatDTO);
     }
 
-    // chat_id번째 채팅방 불러오기
+    // chat_id번째 채팅방 불러오기 -> 이때 제목도 보내줘야함
     @GetMapping("/chat/{chat_id}")
     public ResponseEntity<?> getChat(@PathVariable("chat_id") Long chat_id) throws IOException {
 
@@ -53,7 +53,7 @@ public class ChatController {
         return chatService.getChat(chat_id);
     }
 
-    // chat_id번째 채팅방에 질문 추가 -> Message 테이블에 대화내용 추가해야함
+    // chat_id번째 채팅방에 질문 추가 -> Message 테이블에 대화내용 추가
     @PostMapping("/chat/{chat_id}")
     public ResponseEntity<Message> updateChat(
             @PathVariable("chat_id") Long chat_id,
