@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import study.moyak.user.dto.UserDTO;
 import study.moyak.user.entity.User;
 import study.moyak.user.repository.UserRepository;
 
@@ -15,13 +16,19 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long signup(User user) {
+    public UserDTO signup(User user) {
+
+        UserDTO userDTO = new UserDTO();
+
         if (findUser(user.getEmail()) != null) {
-            return user.getId();
+            userDTO.setUserId(user.getId());
+            return userDTO;
         }
 
         userRepository.save(user);
-        return user.getId();
+        userDTO.setUserId(user.getId());
+
+        return userDTO;
     }
 
     @Transactional

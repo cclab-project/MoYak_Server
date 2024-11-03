@@ -10,6 +10,7 @@ import study.moyak.LoginProvider;
 import study.moyak.auth.model.KakaoProfile;
 import study.moyak.auth.service.AuthService;
 import study.moyak.auth.model.OAuthToken;
+import study.moyak.user.dto.UserDTO;
 import study.moyak.user.entity.User;
 import study.moyak.user.service.UserService;
 
@@ -22,7 +23,7 @@ public class AuthController {
     private final HttpSession session;
 
     @PostMapping("/kakao/callback")
-    public ResponseEntity<Long> kakaoCallback(@RequestParam String code) { //데이터를 리턴해주는 컨트롤러 함수
+    public ResponseEntity<UserDTO> kakaoCallback(@RequestParam String code) { //데이터를 리턴해주는 컨트롤러 함수
 
         OAuthToken oauthToken = authService.getAccessTokenFromKakao(code);
 
