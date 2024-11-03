@@ -11,4 +11,5 @@ public class CreateChatDTO {
 
     private String all_image_url;
     private String timeStamp;
+    private Long userId;
 }

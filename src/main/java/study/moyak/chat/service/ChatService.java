@@ -16,6 +16,7 @@ import study.moyak.chat.entity.Chat;
 import study.moyak.chat.entity.EachPill;
 import study.moyak.chat.repository.ChatMessageRepository;
 import study.moyak.chat.repository.ChatRepository;
+import study.moyak.user.entity.User;
 import study.moyak.user.repository.UserRepository;
 
 import java.io.*;
@@ -64,8 +65,13 @@ public class ChatService {
     public ResponseEntity<?> createChat(CreateChatDTO createChatDTO) throws IOException {
         Chat chat = new Chat();
 
+        // 로그인한 사용자 조회
+        User user = userRepository.findById(createChatDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
+
         chat.setTitle(createChatDTO.getTimeStamp()); // 처음 채팅방 생성됐을 때는 생성된 날짜로
         chat.setAllImage(createChatDTO.getAll_image_url()); // 이미지 경로 저장
+        chat.setUser(user);
 
         chatRepository.save(chat);
 

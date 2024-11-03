@@ -39,6 +39,7 @@ public class ChatController {
     public ResponseEntity<?> createChat(@RequestBody CreateChatDTO createChatDTO) throws IOException {
         System.out.println(createChatDTO.getAll_image_url());
         System.out.println(createChatDTO.getTimeStamp());
+        System.out.println(createChatDTO.getUserId());
 
         return chatService.createChat(createChatDTO);
     }
