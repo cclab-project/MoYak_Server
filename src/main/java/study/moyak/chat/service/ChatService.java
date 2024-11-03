@@ -1,24 +1,21 @@
 package study.moyak.chat.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import study.moyak.chat.dto.EachPillDTO;
+import study.moyak.chat.dto.request.CreateChatDTO;
 import study.moyak.chat.dto.response.ChatMessageDTO;
 import study.moyak.chat.dto.response.ChatResponseDTO;
 import study.moyak.chat.entity.Chat;
 import study.moyak.chat.repository.ChatMessageRepository;
 import study.moyak.chat.repository.ChatRepository;
 import study.moyak.user.repository.UserRepository;
-import study.moyak.chat.service.S3Service;
 
 import java.io.*;
 import java.util.List;
@@ -34,31 +31,18 @@ public class ChatService {
     private final ChatMessageRepository chatMessageRepository;
     private final S3Service s3Service;
 
-    private String S3_DIR = "allImage";
+    // private String S3_DIR = "allImage";
 
     @Transactional
-    public ResponseEntity<?> createChat(MultipartFile allImage, String timeStamp) throws IOException {
+    public ResponseEntity<?> createChat(CreateChatDTO createChatDTO) throws IOException {
         Chat chat = new Chat();
-        chat.setTitle(timeStamp); // 처음 채팅방 생성됐을 때는 생성된 날짜로
-        chatRepository.save(chat); // s3 경로를 위해 미리 저장
 
-        File uploadFile = s3Service.convert(allImage)
-                .orElseThrow(() -> new IllegalArgumentException("파일 변환에 실패하였습니다."));
+        chat.setTitle(createChatDTO.getTimeStamp()); // 처음 채팅방 생성됐을 때는 생성된 날짜로
+        chat.setAllImage(createChatDTO.getAll_image_url()); // 이미지 경로 저장
 
-        if(allImage.isEmpty()){
-            return ResponseEntity.status(404).body("no Image");
-        }else{
-            String originalFilename = uploadFile.getName(); //원본 파일 명
-            String fileName = S3_DIR + "/" + chat.getId() + "/" + UUID.randomUUID() + originalFilename;   // S3에 저장된 파일 이름
-            String uploadUrl = s3Service.uploadS3(uploadFile, fileName);
+        chatRepository.save(chat);
 
-
-            chat.setAllImage(uploadUrl);
-            chatRepository.save(chat); // image 경로 설정 후, 저장
-
-            return ResponseEntity.ok(chat.getId());
-        }
-
+        return ResponseEntity.ok(chat.getId());
     }
 
     // 채팅 내역 불러올 때, chat_id에 해당하는 eachpill에 있는 것들 + 채팅내역 필요

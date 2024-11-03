@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import study.moyak.ai.chatgpt.dto.Message;
 import study.moyak.ai.chatgpt.service.ChatGptService;
+import study.moyak.chat.dto.request.CreateChatDTO;
 import study.moyak.chat.dto.request.NewChatDTO;
 import study.moyak.chat.dto.request.UpdateTitleDTO;
 import study.moyak.chat.entity.EachPill;
@@ -25,7 +26,6 @@ public class ChatController {
 
     private final ChatService chatService;
     private final ChatGptService chatGptService;
-    private final EachPillRepository eachPillRepository;
 
     // 홈화면 요청 -> 알약 전체 사
     @GetMapping("/chat/list?userId={userId}")
@@ -37,13 +37,11 @@ public class ChatController {
 
     // 채팅방 생성
     @PostMapping("/chat/create")
-    public ResponseEntity<?> createChat(@RequestParam("all_image") MultipartFile allImage,
-                                        @RequestParam String timeStamp) throws IOException {
-        // 이미지 파일 정보 출력
-        System.out.println("Original Filename: " + allImage);
-        System.out.println("File Size: " + allImage.getSize());
+    public ResponseEntity<?> createChat(@RequestBody CreateChatDTO createChatDTO) throws IOException {
+        System.out.println(createChatDTO.getAll_image_url());
+        System.out.println(createChatDTO.getTimeStamp());
 
-        return chatService.createChat(allImage, timeStamp);
+        return chatService.createChat(createChatDTO);
     }
 
     // chat_id번째 채팅방 불러오기
