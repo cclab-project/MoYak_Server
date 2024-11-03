@@ -19,9 +19,11 @@ public class UserService {
     public UserDTO signup(User user) {
 
         UserDTO userDTO = new UserDTO();
+        User existUser = findUser(user.getEmail());
 
-        if (findUser(user.getEmail()) != null) {
-            userDTO.setUserId(user.getId());
+        if (existUser != null) {
+            userDTO.setUserId(existUser.getId());
+            System.out.println(userDTO.getUserId());
             return userDTO;
         }
 
