@@ -13,11 +13,12 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public User signup(User user) {
+    public String signup(User user) {
         if (findUser(user.getEmail()) != null) {
-            throw new IllegalStateException("이미 가입된 회원입니다.");
+            return "이미 가입한 회원입니다.";
         }
-        return userRepository.save(user);
+        userRepository.save(user);
+        return "회원가입이 완료되었습니다.";
     }
 
     @Transactional

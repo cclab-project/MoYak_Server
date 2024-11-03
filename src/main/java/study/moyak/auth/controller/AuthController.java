@@ -22,7 +22,7 @@ public class AuthController {
     private final HttpSession session;
 
     @PostMapping("/kakao/callback")
-    public ResponseEntity<User> kakaoCallback(@RequestParam String code) { //데이터를 리턴해주는 컨트롤러 함수
+    public ResponseEntity<String> kakaoCallback(@RequestParam String code) { //데이터를 리턴해주는 컨트롤러 함수
 
         OAuthToken oauthToken = authService.getAccessTokenFromKakao(code);
 
