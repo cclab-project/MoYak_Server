@@ -24,17 +24,14 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    // Base64 데이터를 파일로 변환
-    Optional<File> convert(String base64Image) throws IOException {
-        // 홈 디렉토리에 저장할 파일 이름을 설정 (예: "uploadedImage.jpg")
-        File convertFile = new File(System.getProperty("user.home") + "/uploadedImage.jpg");
+    // Blob 데이터가 포함된 MultipartFile을 File로 변환
+    Optional<File> convert(MultipartFile file) throws IOException {
+        File convertFile = new File(System.getProperty("user.home") + "/" + file.getOriginalFilename());
 
-        // Base64 디코딩하여 바이트 배열로 변환
-        byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
-
+        // 새로운 파일을 생성하여 Blob 데이터를 파일로 저장
         if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(decodedBytes); // 디코딩된 바이트 배열을 파일로 저장
+                fos.write(file.getBytes()); // Blob 데이터를 바이트 배열로 저장
             }
             return Optional.of(convertFile);
         }

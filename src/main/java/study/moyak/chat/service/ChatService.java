@@ -37,7 +37,7 @@ public class ChatService {
     private String S3_DIR = "allImage";
 
     @Transactional
-    public ResponseEntity<?> createChat(String allImage, String timeStamp) throws IOException {
+    public ResponseEntity<?> createChat(MultipartFile allImage, String timeStamp) throws IOException {
         Chat chat = new Chat();
         chat.setTitle(timeStamp); // 처음 채팅방 생성됐을 때는 생성된 날짜로
         chatRepository.save(chat); // s3 경로를 위해 미리 저장

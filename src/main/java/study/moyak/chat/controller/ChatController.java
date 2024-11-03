@@ -37,10 +37,11 @@ public class ChatController {
 
     // 채팅방 생성
     @PostMapping("/chat/create")
-    public ResponseEntity<?> createChat(@RequestParam("all_image") String allImage,
+    public ResponseEntity<?> createChat(@RequestParam("all_image") MultipartFile allImage,
                                         @RequestParam String timeStamp) throws IOException {
         // 이미지 파일 정보 출력
         System.out.println("Original Filename: " + allImage);
+        System.out.println("File Size: " + allImage.getSize());
 
         return chatService.createChat(allImage, timeStamp);
     }
