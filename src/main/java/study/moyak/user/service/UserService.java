@@ -1,6 +1,8 @@
 package study.moyak.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.moyak.user.entity.User;
@@ -13,12 +15,13 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public String signup(User user) {
+    public Long signup(User user) {
         if (findUser(user.getEmail()) != null) {
-            return "이미 가입한 회원입니다.";
+            return user.getId();
         }
+
         userRepository.save(user);
-        return "회원가입이 완료되었습니다.";
+        return user.getId();
     }
 
     @Transactional
