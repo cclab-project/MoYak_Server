@@ -29,8 +29,7 @@ public class ChatController {
 
     // 홈화면 요청 -> 알약 전체 사진, 알약 이름, 생성된 날짜 꺼내와 주세요
     @GetMapping("/chat/list?userId={userId}")
-    public ResponseEntity<?> chatList(@PathVariable("userId") Long userId) throws IOException {
-
+    public ResponseEntity<?> chatList(@RequestParam Long userId) throws IOException {
 
         return chatService.chatList(userId);
     }
