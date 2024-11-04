@@ -48,6 +48,8 @@ public class ChatService {
     private ChatListDTO convertToChatListDTO(Chat chat) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+        System.out.println("시간 : "+ formatter.format(chat.getCreatedAt()));
+
         // Chat -> ChatListDTO 변환 (chat_id 추가)
         return ChatListDTO.builder()
                 .chat_id(chat.getId())

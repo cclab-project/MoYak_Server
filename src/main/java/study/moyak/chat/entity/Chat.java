@@ -33,7 +33,7 @@ public class Chat {
     @Column(columnDefinition = "MEDIUMTEXT", name = "all_image")  // 명시적으로 TEXT 타입으로 지정
     private String allImage;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt ;
 
     @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EachPill> eachPills;
@@ -43,6 +43,6 @@ public class Chat {
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 }

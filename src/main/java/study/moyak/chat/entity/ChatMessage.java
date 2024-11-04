@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Getter
@@ -28,5 +30,12 @@ public class ChatMessage {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+
+    private LocalDateTime chatTime;
+
+    @PrePersist
+    public void prePersist() {
+        this.chatTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+    }
 
 }
