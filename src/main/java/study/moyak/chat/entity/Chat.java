@@ -5,7 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import study.moyak.user.entity.User;
 
-import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity (name = "chatroom")
@@ -20,8 +21,6 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // private String email;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id") // User의 기본 키를 외래 키로 사용
     private User user;
@@ -34,7 +33,7 @@ public class Chat {
     private String allImage;
 
     @CreationTimestamp
-    private Timestamp createDate;
+    private ZonedDateTime createDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 
     // 마지막 대화시간 추가해야됨
 
