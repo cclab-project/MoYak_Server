@@ -12,7 +12,6 @@ import study.moyak.chat.dto.request.CreateChatRequestDTO;
 import study.moyak.chat.dto.response.ChatListDTO;
 import study.moyak.chat.dto.response.ChatMessageDTO;
 import study.moyak.chat.dto.response.ChatResponseDTO;
-import study.moyak.chat.dto.response.CreateChatResponseDTO;
 import study.moyak.chat.entity.Chat;
 import study.moyak.chat.entity.EachPill;
 import study.moyak.chat.repository.ChatRepository;
@@ -67,7 +66,7 @@ public class ChatService {
 
     // createDate와 chatId를 보내주세요
     @Transactional
-    public ResponseEntity<CreateChatResponseDTO> createChat(CreateChatRequestDTO createChatRequestDTO) throws IOException {
+    public ResponseEntity<Long> createChat(CreateChatRequestDTO createChatRequestDTO) throws IOException {
         Chat chat = new Chat();
 
         // 로그인한 사용자 조회
@@ -80,7 +79,7 @@ public class ChatService {
 
         chatRepository.save(chat);
 
-        return ResponseEntity.ok(new CreateChatResponseDTO(chat.getId(), chat.getTitle()));
+        return ResponseEntity.ok(chat.getId());
     }
 
     // 채팅 내역 불러올 때, chat_id에 해당하는 eachpill에 있는 것들 + 채팅내역 + 채팅방 제목 필요

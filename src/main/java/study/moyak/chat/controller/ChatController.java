@@ -8,7 +8,6 @@ import study.moyak.ai.chatgpt.service.ChatGptService;
 import study.moyak.chat.dto.request.CreateChatRequestDTO;
 import study.moyak.chat.dto.request.NewChatDTO;
 import study.moyak.chat.dto.request.UpdateTitleDTO;
-import study.moyak.chat.dto.response.CreateChatResponseDTO;
 import study.moyak.chat.service.ChatService;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ public class ChatController {
 
     // 채팅방 생성 -> createDate와 chatId를 보내주세요
     @PostMapping("/chat/create")
-    public ResponseEntity<CreateChatResponseDTO> createChat(@RequestBody CreateChatRequestDTO createChatRequestDTO) throws IOException {
+    public ResponseEntity<Long> createChat(@RequestBody CreateChatRequestDTO createChatRequestDTO) throws IOException {
         System.out.println(createChatRequestDTO.getAll_image_url());
         System.out.println(createChatRequestDTO.getTimeStamp());
         System.out.println(createChatRequestDTO.getUserId());
