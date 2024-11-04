@@ -8,13 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import study.moyak.chat.dto.EachPillDTO;
-import study.moyak.chat.dto.request.CreateChatDTO;
+import study.moyak.chat.dto.request.CreateChatRequestDTO;
 import study.moyak.chat.dto.response.ChatListDTO;
 import study.moyak.chat.dto.response.ChatMessageDTO;
 import study.moyak.chat.dto.response.ChatResponseDTO;
+import study.moyak.chat.dto.response.CreateChatResponseDTO;
 import study.moyak.chat.entity.Chat;
 import study.moyak.chat.entity.EachPill;
-import study.moyak.chat.repository.ChatMessageRepository;
 import study.moyak.chat.repository.ChatRepository;
 import study.moyak.user.entity.User;
 import study.moyak.user.repository.UserRepository;
@@ -67,20 +67,20 @@ public class ChatService {
 
     // createDate와 chatId를 보내주세요
     @Transactional
-    public ResponseEntity<?> createChat(CreateChatDTO createChatDTO) throws IOException {
+    public ResponseEntity<CreateChatResponseDTO> createChat(CreateChatRequestDTO createChatRequestDTO) throws IOException {
         Chat chat = new Chat();
 
         // 로그인한 사용자 조회
-        User user = userRepository.findById(createChatDTO.getUserId())
+        User user = userRepository.findById(createChatRequestDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
 
-        chat.setTitle(createChatDTO.getTimeStamp()); // 처음 채팅방 생성됐을 때는 생성된 날짜로
-        chat.setAllImage(createChatDTO.getAll_image_url()); // 이미지 경로 저장
+        chat.setTitle(createChatRequestDTO.getTimeStamp()); // 처음 채팅방 생성됐을 때는 생성된 날짜로
+        chat.setAllImage(createChatRequestDTO.getAll_image_url()); // 이미지 경로 저장
         chat.setUser(user);
 
         chatRepository.save(chat);
 
-        return ResponseEntity.ok(chat.getId());
+        return ResponseEntity.ok(new CreateChatResponseDTO(chat.getId(), chat.getTitle()));
     }
 
     // 채팅 내역 불러올 때, chat_id에 해당하는 eachpill에 있는 것들 + 채팅내역 + 채팅방 제목 필요

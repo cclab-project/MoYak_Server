@@ -3,22 +3,15 @@ package study.moyak.chat.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import study.moyak.ai.chatgpt.dto.Message;
 import study.moyak.ai.chatgpt.service.ChatGptService;
-import study.moyak.chat.dto.request.CreateChatDTO;
+import study.moyak.chat.dto.request.CreateChatRequestDTO;
 import study.moyak.chat.dto.request.NewChatDTO;
 import study.moyak.chat.dto.request.UpdateTitleDTO;
-import study.moyak.chat.entity.EachPill;
-import study.moyak.chat.repository.EachPillRepository;
+import study.moyak.chat.dto.response.CreateChatResponseDTO;
 import study.moyak.chat.service.ChatService;
 
 import java.io.IOException;
-import java.sql.Blob;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,12 +29,12 @@ public class ChatController {
 
     // 채팅방 생성 -> createDate와 chatId를 보내주세요
     @PostMapping("/chat/create")
-    public ResponseEntity<?> createChat(@RequestBody CreateChatDTO createChatDTO) throws IOException {
-        System.out.println(createChatDTO.getAll_image_url());
-        System.out.println(createChatDTO.getTimeStamp());
-        System.out.println(createChatDTO.getUserId());
+    public ResponseEntity<CreateChatResponseDTO> createChat(@RequestBody CreateChatRequestDTO createChatRequestDTO) throws IOException {
+        System.out.println(createChatRequestDTO.getAll_image_url());
+        System.out.println(createChatRequestDTO.getTimeStamp());
+        System.out.println(createChatRequestDTO.getUserId());
 
-        return chatService.createChat(createChatDTO);
+        return chatService.createChat(createChatRequestDTO);
     }
 
     // chat_id번째 채팅방 불러오기 -> 이때 제목도 보내줘야함

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateChatDTO {
+public class CreateChatRequestDTO {
 
     private String all_image_url;
     private String timeStamp;
