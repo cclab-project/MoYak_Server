@@ -48,8 +48,6 @@ public class ChatService {
     private ChatListDTO convertToChatListDTO(Chat chat) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        System.out.println("시간 : "+ formatter.format(chat.getCreatedAt()));
-
         // Chat -> ChatListDTO 변환 (chat_id 추가)
         return ChatListDTO.builder()
                 .chat_id(chat.getId())
@@ -88,6 +86,9 @@ public class ChatService {
     // 채팅 내역 불러올 때, chat_id에 해당하는 eachpill에 있는 것들 + 채팅내역 + 채팅방 제목 필요
     @Transactional
     public ResponseEntity<?> getChat(Long chat_id) throws IOException {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         Chat chat = chatRepository.findById(chat_id)
                 .orElseThrow(() -> new FileNotFoundException("채팅방을 찾을 수 없습니다."));
 
@@ -100,8 +101,10 @@ public class ChatService {
                 .collect(Collectors.toList());
 
         List<ChatMessageDTO> chatMessages = chat.getChatMessages().stream()
-                .map(message -> new ChatMessageDTO(message.getRole(), message.getContent()))
+                .map(message
+                        -> new ChatMessageDTO(message.getRole(), message.getContent(), message.getChatTime().format(formatter)))
                 .collect(Collectors.toList());
+        System.out.println(new ChatResponseDTO(eachPills, chatMessages, title));
 
         return ResponseEntity.ok(new ChatResponseDTO(eachPills, chatMessages, title));
     }
