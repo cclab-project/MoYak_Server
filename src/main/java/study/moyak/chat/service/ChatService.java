@@ -48,12 +48,13 @@ public class ChatService {
     private ChatListDTO convertToChatListDTO(Chat chat) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        // Chat -> ChatListDTO 변환
+        // Chat -> ChatListDTO 변환 (chat_id 추가)
         return ChatListDTO.builder()
+                .chat_id(chat.getId())
                 .allImage(chat.getAllImage())
                 .title(chat.getTitle())
                 .pillName(extractPillNames(chat))
-                .createDate(chat.getCreateDate().toLocalDateTime().format(formatter))
+                .createdAt(chat.getCreatedAt().format(formatter))
                 .build();
     }
 

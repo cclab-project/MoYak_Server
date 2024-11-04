@@ -2,6 +2,9 @@ package study.moyak.chat.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -25,4 +28,5 @@ public class ChatMessage {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+
 }

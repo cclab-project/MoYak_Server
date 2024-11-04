@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import study.moyak.user.entity.User;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -32,14 +33,16 @@ public class Chat {
     @Column(columnDefinition = "MEDIUMTEXT", name = "all_image")  // 명시적으로 TEXT 타입으로 지정
     private String allImage;
 
-    @CreationTimestamp
-    private ZonedDateTime createDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-
-    // 마지막 대화시간 추가해야됨
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EachPill> eachPills;
 
     @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ChatMessage> chatMessages;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

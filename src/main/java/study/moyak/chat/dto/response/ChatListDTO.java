@@ -16,6 +16,6 @@ public class ChatListDTO { // 홈화면에서 보여줄 목록: 전체 이미지
     private String allImage;
     private String title;
     private List<String> pillName;
-    private String createDate;
+    private String createdAt;
 
 }
