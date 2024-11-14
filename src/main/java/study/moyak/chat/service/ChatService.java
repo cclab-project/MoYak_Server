@@ -30,8 +30,6 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
 
-    // private String S3_DIR = "allImage";
-
     @Transactional
     public ResponseEntity<List<ChatListDTO>> chatList(Long userId) {
         // userId로 Chat 목록 조회
