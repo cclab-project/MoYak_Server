@@ -23,7 +23,6 @@ public class UserService {
 
         if (existUser != null) {
             userDTO.setUserId(existUser.getId());
-            System.out.println(userDTO.getUserId());
             return userDTO;
         }
 

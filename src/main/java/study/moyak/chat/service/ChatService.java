@@ -21,6 +21,7 @@ import study.moyak.user.repository.UserRepository;
 import java.io.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,7 +71,8 @@ public class ChatService {
 
         // 로그인한 사용자 조회
         User user = userRepository.findById(createChatRequestDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("해당 사용자를 찾을 수 없습니다."));
+
 
         chat.setTitle(createChatRequestDTO.getTimeStamp()); // 처음 채팅방 생성됐을 때는 생성된 날짜로
         chat.setAllImage(createChatRequestDTO.getAll_image_url()); // 이미지 경로 저장
@@ -88,7 +90,7 @@ public class ChatService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         Chat chat = chatRepository.findById(chat_id)
-                .orElseThrow(() -> new FileNotFoundException("채팅방을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("채팅방을 찾을 수 없습니다."));
 
         // tilte 가져오기
         String title = chat.getTitle();
@@ -115,12 +117,10 @@ public class ChatService {
 
         try {
             Chat chat = chatRepository.findById(chat_id).orElseThrow(
-                    () -> new EntityNotFoundException("채팅방을 찾을 수 없습니다.")
+                    () -> new NoSuchElementException("채팅방을 찾을 수 없습니다.")
             );
             chatRepository.delete(chat);
             return ResponseEntity.ok().body("채팅방 삭제 완료"); // 200 OK
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 채팅방을 찾을 수 없습니다."); // 404 Not Found
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 내부 오류가 발생했습니다."); // 500 Internal Server Error
         }
@@ -130,7 +130,7 @@ public class ChatService {
     public ResponseEntity<?> updateTitle(Long chat_id, String title) throws IOException {
         // 채팅방 조회, 없으면 예외 처리
         Chat chat = chatRepository.findById(chat_id).orElseThrow(
-                () -> new EntityNotFoundException("채팅방을 찾을 수 없습니다."));
+                () -> new NoSuchElementException("채팅방을 찾을 수 없습니다."));
 
         // 채팅방 제목 수정
         chat.setTitle(title);
